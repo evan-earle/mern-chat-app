@@ -1,35 +1,43 @@
-import { useState, useNavigate } from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Night from "../../assets/night.jpg";
+import toast from "react-hot-toast";
+import { Oval } from "react-loader-spinner";
 
 export const Login = ({ authType }) => {
   const [show, setShow] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const showPassword = (e) => {
     e.preventDefault();
     setShow(!show);
   };
 
-  //   const navigate = useNavigate();
+  const navigate = useNavigate();
 
-  //   const onSubmit = async (e) => {
-  //     e.preventDefault();
-  //     try {
-  //       await axios.post("/api/auth/login", {
-  //         username,
-  //         password,
-  //       });
-  //       const firstLogin = await axios.get("/api/users/me");
-  //       firstLogin.data.firstLogin === true ? navigate("/search") : navigate("/");
-  //       // toast.success("Signed in");
-  //       await axios.put("/api/users/firstLogin");
-  //     } catch (err) {
-  //       console.log(err);
-  //       // toast.error("Signin failed");
-  //     }
-  //   };
+  const onSubmit = async (e) => {
+    setLoading(true);
+    e.preventDefault();
+    try {
+      await axios.post("/api/auth/login", {
+        email,
+        password,
+      });
+      setTimeout(() => {
+        setLoading(false);
+        toast.success("Logged in");
+        navigate("/chats");
+      }, 1500);
+    } catch (err) {
+      setTimeout(() => {
+        setLoading(false);
+        toast.error("Login failed");
+      }, 1500);
+    }
+  };
 
   return (
     <div
@@ -39,7 +47,7 @@ export const Login = ({ authType }) => {
       <h1 className=" w-1/3 flex justify-center mb-3 p-4 rounded  bg-slate-50 text-3xl">
         Chat App
       </h1>
-      <form className="w-1/3 bg-slate-50 rounded p-4" onSubmit>
+      <form className="w-1/3 bg-slate-50 rounded p-4" onSubmit={onSubmit}>
         <div className="flex justify-evenly w-full ">
           <h3
             className={`text-center p-2  w-3/5 rounded-full cursor-pointer  ${
@@ -92,11 +100,23 @@ export const Login = ({ authType }) => {
             </button>
           </div>
         </div>
-        <div className="mt-4 w-full rounded  p-2 text-center bg-blue-500 text-white">
-          <button className="" type="submit">
-            Login
-          </button>
-        </div>
+        <button
+          className="mt-4 w-full rounded  p-2 text-center bg-blue-500 text-white"
+          type="submit"
+        >
+          {loading ? (
+            <Oval
+              visible={true}
+              height="30"
+              width="30"
+              color="white"
+              ariaLabel="oval-loading"
+              wrapperStyle={{ justifyContent: "center" }}
+            />
+          ) : (
+            "Login"
+          )}
+        </button>
       </form>
     </div>
   );

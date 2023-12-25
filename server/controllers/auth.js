@@ -2,11 +2,12 @@ import bcryptjs from "bcryptjs";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 import createError from "../utils/createError.js";
+import { v2 as cloudinary } from "cloudinary";
 
 export const register = async (req, res, next) => {
   if (!req.body.name || !req.body.email || !req.body.password) {
     return next(
-      createError({ status: 401, message: "Username and password required" })
+      createError({ status: 401, message: "Email and password required" })
     );
   }
   try {
@@ -21,7 +22,6 @@ export const register = async (req, res, next) => {
       name: req.body.name,
       email: req.body.email,
       password: hashedPassword,
-      image: req.body.image,
     });
     await newUser.save();
     return res.status(201).json("New user created");
@@ -31,14 +31,43 @@ export const register = async (req, res, next) => {
   }
 };
 
+export const uploadPhoto = async (req, res, next) => {
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+  try {
+    const fileStr = req.body.data;
+    const uploadedResponse = await cloudinary.uploader.upload(fileStr, {
+      upload_preset: "chat-app",
+    });
+    return res.status(200).json(uploadedResponse);
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const storePhoto = async (req, res, next) => {
+  try {
+    const data = await User.findOneAndUpdate(
+      { email: req.body.email },
+      {
+        image: req.body.photo,
+      }
+    );
+    return res.status(200).json(data);
+  } catch (err) {
+    return next(err);
+  }
+};
+
 export const login = async (req, res, next) => {
   if (!req.body.email || !req.body.password) {
-    return next(createError({ status: 401, message: "Username is required" }));
+    return next(createError({ status: 401, message: "Email is required" }));
   }
   try {
-    const user = await User.findOne({ email: req.body.email }).select(
-      "username password"
-    );
+    const user = await User.findOne({ email: req.body.email });
     if (!user) {
       return next(createError({ status: 404, message: "No user found" }));
     }

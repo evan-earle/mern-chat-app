@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 import Night from "../../assets/night.jpg";
+import toast from "react-hot-toast";
+import { Oval } from "react-loader-spinner";
 
 export const Register = ({ authType }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -9,7 +11,8 @@ export const Register = ({ authType }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [image, setImage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [previewSource, setPreviewSource] = useState("");
 
   const handleShowPassword = (e) => {
     e.preventDefault();
@@ -21,26 +24,65 @@ export const Register = ({ authType }) => {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
-  const postImage = (photo) => {};
-  //   const onSubmit = async (e) => {
-  //     e.preventDefault();
+  const handleFileInputChange = (e) => {
+    const file = e.target.files[0];
+    previewFile(file);
+  };
 
-  //     try {
-  //       await axios.post("/api/auth/register", {
-  //         username,
-  //         password,
-  //       });
-  //       // toast.success("Registered");
-  //       authType("signin");
-  //     } catch (err) {
-  //       console.log(err);
-  //       if (err.response.data.message === "User already exists") {
-  //         //   toast.error("User already exists");
-  //       } else {
-  //         //   toast.error("Registration failed");
-  //       }
-  //     }
-  //   };
+  const previewFile = (file) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      setPreviewSource(reader.result);
+    };
+  };
+
+  const onSubmit = async (e) => {
+    setLoading(true);
+    e.preventDefault();
+    try {
+      await axios.post("/api/auth/register", {
+        name,
+        email,
+        password,
+      });
+      if (previewSource) {
+        uploadImage(previewSource, email);
+      }
+      setTimeout(() => {
+        setLoading(false);
+        toast.success("Registered");
+        authType("login");
+      }, 1500);
+    } catch (err) {
+      setTimeout(() => {
+        setLoading(false);
+        if (err.response.data.message === "User already exists") {
+          toast.error("User already exists");
+        } else {
+          toast.error("Registration failed");
+        }
+      }, 1500);
+    }
+  };
+
+  const uploadImage = async (base64EncodedImage, email) => {
+    try {
+      const data = await axios("/api/auth/upload", {
+        method: "POST",
+        data: JSON.stringify({ data: base64EncodedImage }),
+        headers: { "Content-type": "application/json" },
+      });
+
+      const photo = data.data.url;
+      await axios.post(`/api/auth/storePhoto`, {
+        email,
+        photo,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div
@@ -50,7 +92,7 @@ export const Register = ({ authType }) => {
       <h1 className=" w-1/3 flex justify-center mb-3 p-4 rounded  bg-slate-50 text-3xl">
         Chat App
       </h1>
-      <form className="w-1/3 bg-slate-50 rounded p-4" onSubmit>
+      <form className="w-1/3 bg-slate-50 rounded p-4" onSubmit={onSubmit}>
         <div className="flex justify-evenly w-full ">
           <h3
             onClick={() => authType("login")}
@@ -148,15 +190,27 @@ export const Register = ({ authType }) => {
           <input
             type="file"
             name="image"
-            onChange={(e) => postImage(e.target.files[0])}
+            onChange={handleFileInputChange}
             className="mt-2 w-full p-2 "
           />
         </div>
-        <div className="mt-4 w-full rounded  p-2 text-center bg-blue-500 text-white">
-          <button className="" type="submit">
-            Register
-          </button>
-        </div>
+        <button
+          className="mt-4 w-full rounded  p-2 text-center bg-blue-500 text-white"
+          type="submit"
+        >
+          {loading ? (
+            <Oval
+              visible={true}
+              height="30"
+              width="30"
+              color="white"
+              ariaLabel="oval-loading"
+              wrapperStyle={{ justifyContent: "center" }}
+            />
+          ) : (
+            "Register"
+          )}
+        </button>
       </form>
     </div>
   );
