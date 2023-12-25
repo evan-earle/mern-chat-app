@@ -10,6 +10,7 @@ export const Login = ({ authType }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [guestLoading, setGuestLoading] = useState(false);
 
   const showPassword = (e) => {
     e.preventDefault();
@@ -19,7 +20,11 @@ export const Login = ({ authType }) => {
   const navigate = useNavigate();
 
   const onSubmit = async (e) => {
-    setLoading(true);
+    if (email === "guest@account.com") {
+      setGuestLoading(true);
+    } else {
+      setLoading(true);
+    }
     e.preventDefault();
     try {
       await axios.post("/api/auth/login", {
@@ -28,12 +33,14 @@ export const Login = ({ authType }) => {
       });
       setTimeout(() => {
         setLoading(false);
+        setGuestLoading(false);
         toast.success("Logged in");
         navigate("/chats");
       }, 1500);
     } catch (err) {
       setTimeout(() => {
         setLoading(false);
+        setGuestLoading(false);
         toast.error("Login failed");
       }, 1500);
     }
@@ -110,11 +117,33 @@ export const Login = ({ authType }) => {
               height="30"
               width="30"
               color="white"
+              secondaryColor="grey"
               ariaLabel="oval-loading"
               wrapperStyle={{ justifyContent: "center" }}
             />
           ) : (
             "Login"
+          )}
+        </button>
+        <button
+          className="mt-2 w-full rounded  p-2 text-center bg-slate-500 text-white"
+          onClick={() => {
+            setEmail("guest@account.com");
+            setPassword("123");
+          }}
+        >
+          {guestLoading ? (
+            <Oval
+              visible={true}
+              height="30"
+              width="30"
+              color="white"
+              secondaryColor="grey"
+              ariaLabel="oval-loading"
+              wrapperStyle={{ justifyContent: "center" }}
+            />
+          ) : (
+            "Login as Guest"
           )}
         </button>
       </form>
