@@ -5,7 +5,7 @@ import { v2 as cloudinary } from "cloudinary";
 
 export const getUserInfo = async (req, res, next) => {
   try {
-    const data = await User.findById(req.user.id).select("username firstLogin");
+    const data = await User.findById(req.user.id);
     return res.status(200).json(data);
   } catch (err) {
     return next(err);
@@ -70,6 +70,27 @@ export const storePhoto = async (req, res, next) => {
 export const getPhoto = async (req, res, next) => {
   try {
     const data = await User.findById(req.user.id, {}).select("image");
+    return res.status(200).json(data);
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const allUsers = async (req, res, next) => {
+  try {
+    const keyword = req.query.search
+      ? {
+          $or: [
+            { name: { $regex: req.query.search, $options: "i" } },
+            { email: { $regex: req.query.search, $options: "i" } },
+          ],
+        }
+      : {};
+
+    const data = await User.find(keyword).find({
+      _id: { $ne: req.user.id },
+    });
+
     return res.status(200).json(data);
   } catch (err) {
     return next(err);

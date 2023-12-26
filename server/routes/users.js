@@ -5,10 +5,12 @@ import {
   upload,
   storePhoto,
   getPhoto,
+  allUsers,
 } from "../controllers/users.js";
 
 const router = express.Router();
 
+router.get("/", allUsers);
 router.get("/me", getUserInfo);
 router.put("/me", updateUser);
 router.post("/upload", upload);
