@@ -4,7 +4,7 @@ import { useState, useNavigate, useEffect } from "react";
 import userAuth from "../hooks/useAuth";
 
 export const Home = () => {
-  const [authType, setAuthType] = useState("signin");
+  const [authType, setAuthType] = useState("login");
   const { auth } = userAuth();
   // const navigate = useNavigate();
 
@@ -18,7 +18,7 @@ export const Home = () => {
   //   }
   // }, [auth, navigate]);
 
-  if (authType === "signin") {
+  if (authType === "login") {
     return (
       <div className="auth">
         <Login authType={changeAuthType} />
