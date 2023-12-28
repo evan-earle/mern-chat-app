@@ -72,7 +72,7 @@ export const fetchChats = async (req, res, next) => {
 
 export const createGroupChat = async (req, res, next) => {
   if (!req.body.users || !req.body.name) {
-    return res.status(400).send({ message: "Please Fill all the feilds" });
+    return res.status(400).send({ message: "Please Fill all the fields" });
   }
 
   var users = req.body.users;
@@ -98,6 +98,79 @@ export const createGroupChat = async (req, res, next) => {
       .populate("groupAdmin", "-password");
 
     res.status(200).json(fullGroupChat);
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const renameGroup = async (req, res, next) => {
+  try {
+    const { chatId, chatName } = req.body;
+    const updatedChat = await Chat.findByIdAndUpdate(
+      chatId,
+      {
+        chatName: chatName,
+      },
+      {
+        new: true,
+      }
+    )
+      .populate("users", "-password")
+      .populate("groupAdmin", "-password");
+
+    if (!updatedChat) {
+      res.status(404).send({ message: "Chat not found" });
+    } else {
+      res.status(200).json(updatedChat);
+    }
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const addToGroup = async (req, res, next) => {
+  try {
+    const { chatId, userId } = req.body;
+
+    const added = await Chat.findByIdAndUpdate(
+      chatId,
+      {
+        $push: { users: userId },
+      },
+      { new: true }
+    )
+      .populate("users", "-password")
+      .populate("groupAdmin", "-password");
+
+    if (!added) {
+      res.status(404).send({ message: "Chat not found" });
+    } else {
+      res.status(200).json(added);
+    }
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const removeFromGroup = async (req, res, next) => {
+  try {
+    const { chatId, userId } = req.body;
+
+    const removed = await Chat.findByIdAndUpdate(
+      chatId,
+      {
+        $pull: { users: userId },
+      },
+      { new: true }
+    )
+      .populate("users", "-password")
+      .populate("groupAdmin", "-password");
+
+    if (!removed) {
+      res.status(404).send({ message: "Chat not found" });
+    } else {
+      res.status(200).json(removed);
+    }
   } catch (err) {
     return next(err);
   }

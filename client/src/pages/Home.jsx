@@ -1,22 +1,24 @@
 import { Login } from "../components/auth/Login";
 import { Register } from "../components/auth/Register";
-import { useState, useNavigate, useEffect } from "react";
+import { useState, useEffect } from "react";
 import userAuth from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 export const Home = () => {
   const [authType, setAuthType] = useState("login");
   const { auth } = userAuth();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const changeAuthType = (auth) => {
     setAuthType(auth);
   };
 
-  // useEffect(() => {
-  //   if (auth) {
-  //     navigate("/chats");
-  //   }
-  // }, [auth, navigate]);
+  useEffect(() => {
+    if (auth) {
+      // navigate("/chats");
+      navigate("/");
+    }
+  }, [auth, navigate]);
 
   if (authType === "login") {
     return (

@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Home } from "./pages/Home";
 import { ChatPage } from "./pages/ChatPage";
 import { Toaster } from "react-hot-toast";
+import PrivateRoutes from "./components/PrivateRoutes";
 
 function App() {
   return (
@@ -16,8 +17,10 @@ function App() {
       ></Toaster>
       <Router>
         <Routes>
+          <Route element={<PrivateRoutes />}>
+            <Route path="/chats" element={<ChatPage />} />
+          </Route>
           <Route path="/" element={<Home />} />
-          <Route path="/chats" element={<ChatPage />} />
         </Routes>
       </Router>
     </div>
