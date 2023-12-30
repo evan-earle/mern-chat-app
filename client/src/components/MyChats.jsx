@@ -5,9 +5,11 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { Oval } from "react-loader-spinner";
 import { getSender } from "../config/ChatLogics.jsx";
+import { GroupChatModal } from "./misc/GroupChatModal.jsx";
 
 export const MyChats = ({ fetchAgain }) => {
   const [loggedUser, setLoggedUser] = useState();
+  const [isOpen, setIsOpen] = useState(false);
   const { selectedChat, setSelectedChat, user, chats, setChats } = ChatState();
 
   const fetchChats = async () => {
@@ -19,6 +21,10 @@ export const MyChats = ({ fetchAgain }) => {
       toast.error("Failed to load chats");
       console.log(err);
     }
+  };
+
+  const toggleModal = () => {
+    setIsOpen(!isOpen);
   };
 
   useEffect(() => {
@@ -33,10 +39,14 @@ export const MyChats = ({ fetchAgain }) => {
           selectedChat ? "hidden" : "flex"
         }, md:flex w-1/3  h-full border-4 border-blue-400`}
       > */}
+      <GroupChatModal toggleModal={toggleModal} isOpen={isOpen} />
       <div className=" flex h-full overflow-hidden mb-4  flex-col w-1/4 mt-4 ml-4 bg-white p-2 rounded pl-2 pr-2 items-center border-4">
         <div className="flex justify-between w-full items-center mb-4 ">
           <h3 className="text-2xl ml-2">My Chats</h3>
-          <button className="cursor-pointer bg-gray-200 hover:bg-slate-300 rounded h-12 w-40 duration-300">
+          <button
+            className="cursor-pointer bg-gray-200 hover:bg-slate-300 rounded h-12 w-40 duration-300"
+            onClick={toggleModal}
+          >
             New Group Chat +
           </button>
         </div>

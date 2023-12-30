@@ -11,7 +11,7 @@ import { Transition } from "@headlessui/react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { Oval } from "react-loader-spinner";
-import { UserListItem } from "../userAvatar/UserListItem.jsx";
+import { UserListItem } from "../userItems/UserListItem.jsx";
 
 export const SideDrawer = () => {
   const [search, setSearch] = useState("");
@@ -22,7 +22,7 @@ export const SideDrawer = () => {
 
   const { user, setSelectedChat, chats, setChats } = ChatState();
 
-  const openDrawer = () => {
+  const toggleDrawer = () => {
     setIsOpen(!isOpen);
     setSearch("");
     setSearchResult([]);
@@ -71,7 +71,7 @@ export const SideDrawer = () => {
       <div className="w-full  border-4 items-center flex justify-between bg-white">
         <button
           className="ml-2 p-2 rounded flex w-32 justify-between items-center hover:bg-slate-200 duration-300"
-          onClick={openDrawer}
+          onClick={toggleDrawer}
         >
           <FontAwesomeIcon icon={faMagnifyingGlass} />
           Search User
@@ -105,7 +105,7 @@ export const SideDrawer = () => {
           <div className="top-0 left-0 fixed w-[20vw] bg-white  text-black  h-full overflow-y-scroll pb-4 ">
             <div className="flex w-full justify-between p-4 border-b-2 pl-6 pr-6">
               <h3 className="text-2xl text-">Search Users</h3>
-              <button onClick={openDrawer}>
+              <button onClick={toggleDrawer}>
                 <FontAwesomeIcon icon={faXmark} className="cursor-pointer" />
               </button>
             </div>
@@ -138,6 +138,7 @@ export const SideDrawer = () => {
             ) : (
               searchResult.map((user) => (
                 <UserListItem
+                  margins={"p-4 mt-2"}
                   key={user._id}
                   user={user}
                   handleFunction={() => accessChat(user._id)}
