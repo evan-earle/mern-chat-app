@@ -115,7 +115,7 @@ export const Register = ({ authType }) => {
             <span className="text-red-500"> *</span>
           </div>
           <input
-            className="mt-2 w-full p-2 border-2 rounded"
+            className="mt-2 w-full p-2 border-2 rounded focus:outline-none focus:border-blue-400"
             required
             type="text"
             value={name}
@@ -130,7 +130,7 @@ export const Register = ({ authType }) => {
             <span className="text-red-500"> *</span>
           </div>
           <input
-            className="mt-2 w-full p-2 border-2 rounded"
+            className="mt-2 w-full p-2 border-2 rounded focus:outline-none focus:border-blue-400"
             required
             type="text"
             value={email}
@@ -145,7 +145,7 @@ export const Register = ({ authType }) => {
             <span className="text-red-500"> *</span>
           </div>
           <input
-            className="mt-2 w-full p-2 border-2 rounded"
+            className="mt-2 w-full p-2 border-2 rounded focus:outline-none focus:border-blue-400"
             required
             type={showPassword ? "text" : "password"}
             value={password}
@@ -167,7 +167,7 @@ export const Register = ({ authType }) => {
           </div>
           <div className>
             <input
-              className="mt-2 w-full p-2 border-2 rounded"
+              className="mt-2 w-full p-2 border-2 rounded focus:outline-none focus:border-blue-400"
               required
               type={showConfirmPassword ? "text" : "password"}
               value={confirmPassword}

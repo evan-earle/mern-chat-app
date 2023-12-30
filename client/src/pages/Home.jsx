@@ -15,20 +15,19 @@ export const Home = () => {
 
   useEffect(() => {
     if (auth) {
-      // navigate("/chats");
-      navigate("/");
+      navigate("/chats");
     }
   }, [auth, navigate]);
 
   if (authType === "login") {
     return (
-      <div className="auth">
+      <div>
         <Login authType={changeAuthType} />
       </div>
     );
   } else {
     return (
-      <div className="auth">
+      <div>
         <Register authType={changeAuthType} />
       </div>
     );

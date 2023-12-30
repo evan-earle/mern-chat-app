@@ -4,6 +4,7 @@ import axios from "axios";
 import Night from "../../assets/night.jpg";
 import toast from "react-hot-toast";
 import { Oval } from "react-loader-spinner";
+import { ChatState } from "../../context/ChatProvider";
 
 export const Login = ({ authType }) => {
   const [show, setShow] = useState(false);
@@ -11,6 +12,8 @@ export const Login = ({ authType }) => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [guestLoading, setGuestLoading] = useState(false);
+
+  const { setUser } = ChatState();
 
   const showPassword = (e) => {
     e.preventDefault();
@@ -27,10 +30,13 @@ export const Login = ({ authType }) => {
     }
     e.preventDefault();
     try {
-      await axios.post("/api/auth/login", {
+      const { data } = await axios.post("/api/auth/login", {
         email,
         password,
       });
+      setUser(data);
+
+      localStorage.setItem("userInfo", JSON.stringify(data));
       setTimeout(() => {
         setLoading(false);
         setGuestLoading(false);
@@ -77,7 +83,7 @@ export const Login = ({ authType }) => {
             <span className="text-red-500"> *</span>
           </div>
           <input
-            className="mt-2 w-full p-2 border-2 rounded"
+            className="mt-2 w-full p-2 border-2 focus:outline-none focus:border-blue-400 rounded"
             required
             type="text"
             value={email}
@@ -92,7 +98,7 @@ export const Login = ({ authType }) => {
           </div>
           <div>
             <input
-              className="mt-2 w-full p-2 border-2 rounded"
+              className="mt-2 w-full p-2 border-2 rounded focus:outline-none focus:border-blue-400"
               required
               type={show ? "text" : "password"}
               value={password}

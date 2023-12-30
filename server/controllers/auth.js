@@ -92,7 +92,15 @@ export const login = async (req, res, next) => {
         httpOnly: true,
       })
       .status(200)
-      .json({ message: "Login successful" });
+      .json({
+        message: "Login successful",
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin,
+        image: user.image,
+        token: token,
+      });
   } catch (err) {
     console.log(err);
     return next(err);

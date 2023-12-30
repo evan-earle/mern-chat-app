@@ -8,7 +8,7 @@ function App() {
   return (
     <div className="App">
       <Toaster
-        position="top-left"
+        position="bottom-center"
         toastOptions={{
           style: {
             fontSize: "1.5rem",

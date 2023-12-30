@@ -1,0 +1,86 @@
+/* eslint-disable react/prop-types */
+import { ChatState } from "../context/ChatProvider";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { Oval } from "react-loader-spinner";
+import { getSender } from "../config/ChatLogics.jsx";
+
+export const MyChats = ({ fetchAgain }) => {
+  const [loggedUser, setLoggedUser] = useState();
+  const { selectedChat, setSelectedChat, user, chats, setChats } = ChatState();
+
+  const fetchChats = async () => {
+    try {
+      const { data } = await axios.get(`/api/chat`);
+      setChats(data);
+      console.log(data);
+    } catch (err) {
+      toast.error("Failed to load chats");
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
+    fetchChats();
+  }, []);
+
+  return (
+    <>
+      {/* <div
+        className={`${
+          selectedChat ? "hidden" : "flex"
+        }, md:flex w-1/3  h-full border-4 border-blue-400`}
+      > */}
+      <div className=" flex h-full overflow-hidden mb-4  flex-col w-1/4 mt-4 ml-4 bg-white p-2 rounded pl-2 pr-2 items-center border-4">
+        <div className="flex justify-between w-full items-center mb-4 ">
+          <h3 className="text-2xl ml-2">My Chats</h3>
+          <button className="cursor-pointer bg-gray-200 hover:bg-slate-300 rounded h-12 w-40 duration-300">
+            New Group Chat +
+          </button>
+        </div>
+
+        {chats ? (
+          <div className="flex flex-col w-full overflow-y-scroll overflow-x-hidden bg-slate-200 p-2  pt-0 rounded ">
+            {chats.map((chat) => (
+              <div
+                key={chat._id}
+                className={`flex cursor-pointer w-full p-2 mt-3 rounded-lg  hover:bg-slate-400 duration-300 ${
+                  selectedChat === chat
+                    ? "bg-gray-600 text-white"
+                    : "bg-slate-300"
+                }`}
+                onClick={() => setSelectedChat(chat)}
+              >
+                <img
+                  src={chat.users[1].image}
+                  alt="profile-photo"
+                  className="rounded-full w-12 h-12"
+                />
+                <div className="flex-col ml-4">
+                  <div>
+                    {!chat.isGroupChat
+                      ? getSender(loggedUser, chat.users)
+                      : chat.chatName}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <Oval
+            visible={true}
+            height="30"
+            width="30"
+            color="white"
+            secondaryColor="grey"
+            ariaLabel="oval-loading"
+            wrapperStyle={{ justifyContent: "center" }}
+          />
+        )}
+      </div>
+      {/* </div> */}
+    </>
+  );
+};
