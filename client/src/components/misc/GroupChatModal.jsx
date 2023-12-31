@@ -96,8 +96,8 @@ export const GroupChatModal = ({ isOpen, toggleModal }) => {
           <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
         </Transition.Child>
 
-        <div className="fixed inset-0 z-10 w-screen h-screen">
-          <div className="flex h-full items-center overflow-hidden justify-center p-4 text-center sm:items-center sm:p-0  ">
+        <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+          <div className="flex h-full items-center overflow-hidden justify-center p-4 text-center sm:items-center sm:p-0">
             <Transition.Child
               as={Fragment}
               show={isOpen}
@@ -109,8 +109,8 @@ export const GroupChatModal = ({ isOpen, toggleModal }) => {
               leaveTo="opacity-0"
             >
               <div className="flex h-3/5 flex-col w-1/4 overflow-hidden rounded-lg bg-white text-left ">
-                <div className="flex ">
-                  <div className="flex w-full justify-center items-center bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4 ">
+                <div className="flex">
+                  <div className="flex w-full justify-center items-center bg-white px-4 pb-4 pt-5  ">
                     <h3 className="text-2xl items-center font-semibold leading-6 text-gray-900 ">
                       Create Group Chat
                     </h3>

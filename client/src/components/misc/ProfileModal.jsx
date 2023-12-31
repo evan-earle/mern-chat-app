@@ -1,10 +1,9 @@
-import { Fragment, useRef, useState } from "react";
+/* eslint-disable react/prop-types */
+import { Fragment, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { ChatState } from "../../context/ChatProvider";
 
-export const ProfileModal = ({ isOpen, toggleModal }) => {
+export const ProfileModal = ({ user, isOpen, toggleModal }) => {
   const cancelButtonRef = useRef(null);
-  const { user } = ChatState();
 
   return (
     <Transition.Root show={isOpen} as={Fragment} appear={true}>

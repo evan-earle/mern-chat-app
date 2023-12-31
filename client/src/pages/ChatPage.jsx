@@ -10,13 +10,19 @@ export const ChatPage = () => {
   const { user } = ChatState();
 
   return (
-    <div
-      className="bg-no-repeat bg-cover bg-center flex flex-col h-screen"
-      style={{ backgroundImage: `url(${Night})` }}
-    >
-      {user && <SideDrawer />}
-      {user && <MyChats fetchAgain={fetchAgain} />}
-      {/* <ChatBox /> */}
-    </div>
+    <>
+      <div
+        className="bg-no-repeat bg-cover bg-center flex flex-col h-screen "
+        style={{ backgroundImage: `url(${Night})` }}
+      >
+        {user && <SideDrawer />}
+        <div className="flex overflow-hidden h-full mb-4 ">
+          {user && <MyChats fetchAgain={fetchAgain} />}
+          {user && (
+            <ChatBox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+          )}
+        </div>
+      </div>
+    </>
   );
 };

@@ -14,7 +14,7 @@ function classNames(...classes) {
 export const Dropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const { setUser } = ChatState();
+  const { user, setUser } = ChatState();
 
   const navigate = useNavigate();
 
@@ -35,12 +35,12 @@ export const Dropdown = () => {
 
   return (
     <>
-      <ProfileModal toggleModal={toggleModal} isOpen={isOpen} />
+      <ProfileModal toggleModal={toggleModal} isOpen={isOpen} user={user} />
       <Menu as="div" className="relative inline-block text-left">
         <div>
           <Menu.Button className="hover:bg-slate-200  bg-slate-100 duration-300 inline-flex w-full justify-center gap-x-1.5 rounded-md  p-1  text-sm font-semibold text-black ">
             <ChevronDownIcon
-              className="flex  h-5 w-5 text-gray-400"
+              className="flex h-5 w-5 text-gray-400"
               aria-hidden="true"
             />
           </Menu.Button>

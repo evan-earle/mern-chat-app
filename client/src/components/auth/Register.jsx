@@ -90,7 +90,7 @@ export const Register = ({ authType }) => {
       style={{ backgroundImage: `url(${Night})` }}
     >
       <h1 className=" w-1/3 flex justify-center mb-3 p-4 rounded  bg-slate-50 text-3xl">
-        Chat App
+        Skyward
       </h1>
       <form className="w-1/3 bg-slate-50 rounded p-4" onSubmit={onSubmit}>
         <div className="flex justify-evenly w-full ">

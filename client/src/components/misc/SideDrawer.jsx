@@ -70,14 +70,15 @@ export const SideDrawer = () => {
     <>
       <div className="w-full  border-4 items-center flex justify-between bg-white">
         <button
-          className="ml-2 p-2 rounded flex w-32 justify-between items-center hover:bg-slate-200 duration-300"
+          className="ml-2 p-2 rounded flex w-36 justify-between items-center hover:bg-slate-200 duration-300"
           onClick={toggleDrawer}
         >
           <FontAwesomeIcon icon={faMagnifyingGlass} />
           Search User
         </button>
-        <h1 className="text-2xl">Chat App</h1>
-        <div className="flex items-center w-56 justify-between mr-6 ">
+        <h1 className="text-2xl">Skyward</h1>
+        <div className="flex items-center w-80 justify-between mr-6 ">
+          {user.name}
           <FontAwesomeIcon icon={faBell} className="cursor-pointer" />
           <button className="rounded h-12 flex items-center cursor-default">
             <img

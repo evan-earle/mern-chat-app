@@ -16,7 +16,6 @@ export const MyChats = ({ fetchAgain }) => {
     try {
       const { data } = await axios.get(`/api/chat`);
       setChats(data);
-      console.log(data);
     } catch (err) {
       toast.error("Failed to load chats");
       console.log(err);
@@ -30,21 +29,19 @@ export const MyChats = ({ fetchAgain }) => {
   useEffect(() => {
     setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
     fetchChats();
-  }, []);
+  }, [fetchAgain]);
 
   return (
     <>
-      {/* <div
-        className={`${
-          selectedChat ? "hidden" : "flex"
-        }, md:flex w-1/3  h-full border-4 border-blue-400`}
-      > */}
       <GroupChatModal toggleModal={toggleModal} isOpen={isOpen} />
-      <div className=" flex h-full overflow-hidden mb-4  flex-col w-1/4 mt-4 ml-4 bg-white p-2 rounded pl-2 pr-2 items-center border-4">
-        <div className="flex justify-between w-full items-center mb-4 ">
+      <div
+        className={`flex flex-col w-2/5 mt-4 ml-4  bg-white p-2 rounded pl-2 pr-2 items-center border-4
+          ${selectedChat ? "max-lg:hidden" : "max-lg:w-full"}`}
+      >
+        <div className="flex justify-between h-12 w-full items-center mb-4 ">
           <h3 className="text-2xl ml-2">My Chats</h3>
           <button
-            className="cursor-pointer bg-gray-200 hover:bg-slate-300 rounded h-12 w-40 duration-300"
+            className="cursor-pointer bg-gray-200  hover:bg-slate-300 rounded h-12 w-40 duration-300"
             onClick={toggleModal}
           >
             New Group Chat +
@@ -52,11 +49,11 @@ export const MyChats = ({ fetchAgain }) => {
         </div>
 
         {chats ? (
-          <div className="flex flex-col w-full overflow-y-scroll overflow-x-hidden bg-slate-200 p-2  pt-0 rounded ">
+          <div className="flex flex-col h-full w-full overflow-y-scroll overflow-x-hidden   bg-slate-200 p-2   pt-0 rounded ">
             {chats.map((chat) => (
               <div
                 key={chat._id}
-                className={`flex cursor-pointer w-full p-2 mt-3 rounded-lg  hover:bg-slate-400 duration-300 ${
+                className={`flex cursor-pointer w-full p-2 mt-3 rounded-lg  hover:bg-slate-400 duration-300  ${
                   selectedChat === chat
                     ? "bg-gray-600 text-white"
                     : "bg-slate-300"
@@ -90,7 +87,6 @@ export const MyChats = ({ fetchAgain }) => {
           />
         )}
       </div>
-      {/* </div> */}
     </>
   );
 };
