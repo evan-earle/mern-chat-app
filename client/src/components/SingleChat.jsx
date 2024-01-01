@@ -173,26 +173,27 @@ export const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                             user._id
                           )} `}
                         >
-                          <div className="flex ">
+                          <div className="flex">
                             <div className="">
-                              {isSameSender(messages, m, i, user._id) && (
-                                // && isLastMessage(messages, i, user._id)
-                                <img
-                                  className="w-10 h-10 rounded-full mr-1 "
-                                  src={m.sender.image}
-                                  alt="sender-image"
-                                />
-                              )}
+                              {isSameSender(messages, m, i, user._id) &&
+                                isLastMessage(messages, m, i, user._id) && (
+                                  <img
+                                    className="w-10 h-10 rounded-full mr-1 "
+                                    src={m.sender.image}
+                                    alt="sender-image"
+                                  />
+                                )}
                             </div>
                             <div
                               ref={messagesEndRef}
-                              className={`flex flex-col max-w-1/2 flex-wrap rounded-full p-2 px-4  ${
+                              className={` max-w-2xl rounded-lg p-2 px-4  ${
                                 m.sender._id === user._id
                                   ? "bg-green-500"
                                   : `bg-blue-500 ${
-                                      !isSameSender(messages, m, i, user._id)
-                                        ? "ml-11"
-                                        : null
+                                      isSameSender(messages, m, i, user._id) &&
+                                      isLastMessage(messages, i, user._id)
+                                        ? null
+                                        : "ml-11"
                                     }`
                               }`}
                             >
