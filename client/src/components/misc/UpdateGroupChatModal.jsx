@@ -7,12 +7,16 @@ import toast from "react-hot-toast";
 import { UserBadgeItem } from "../userItems/UserBadgeItem";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { Oval } from "react-loader-spinner";
+import { UserListItem } from "../userItems/UserListItem";
+import axios from "axios";
 
 export const UpdateGroupChatModal = ({
   fetchAgain,
   setFetchAgain,
   isGroupOpen,
   toggleGroupModal,
+  fetchMessages,
 }) => {
   const [groupChatName, setGroupChatName] = useState();
   const [search, setSearch] = useState("");
@@ -23,11 +27,95 @@ export const UpdateGroupChatModal = ({
   const cancelButtonRef = useRef(null);
   const { selectedChat, setSelectedChat, user } = ChatState();
 
-  const handleRemove = () => {};
+  const handleRemove = async (user1) => {
+    if (selectedChat.groupAdmin._id !== user._id && user1._id !== user._id) {
+      toast.error("Only admins can remove user");
+      return;
+    }
 
-  const handleRename = () => {};
+    try {
+      setLoading(true);
+      const { data } = await axios.put(`/api/chat/groupremove`, {
+        chatId: selectedChat._id,
+        userId: user1._id,
+      });
+      user1._id === user._id ? setSelectedChat() : setSelectedChat(data);
+      setFetchAgain(!fetchAgain);
+      fetchMessages();
+      setLoading(false);
+      toast.success("User removed");
+    } catch (error) {
+      setLoading(false);
+      toast.error("Error");
+      return;
+    }
+  };
 
-  const handleSearch = () => {};
+  const handleAddUser = async (user1) => {
+    if (selectedChat.users.find((user) => user._id === user1._id)) {
+      toast.error("User already in group");
+      return;
+    }
+
+    if (selectedChat.groupAdmin._id !== user._id) {
+      toast.error("Only admins can add user");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const { data } = await axios.put(`/api/chat/groupadd`, {
+        chatId: selectedChat._id,
+        userId: user1._id,
+      });
+      setSelectedChat(data);
+      setFetchAgain(!fetchAgain);
+      setLoading(false);
+      toast.success("User added");
+      return;
+    } catch (err) {
+      setLoading(false);
+      toast.error("Error");
+      return;
+    }
+  };
+
+  const handleRename = async () => {
+    if (!groupChatName) return;
+
+    try {
+      setRenameLoading(true);
+
+      const { data } = await axios.put(`/api/chat/rename`, {
+        chatId: selectedChat._id,
+        chatName: groupChatName,
+      });
+      setSelectedChat(data);
+      setFetchAgain(!fetchAgain);
+      setRenameLoading(false);
+    } catch (error) {
+      toast.error("Error");
+      setRenameLoading(false);
+    }
+    setGroupChatName("");
+  };
+
+  const handleSearch = async (query) => {
+    setSearch(query);
+    if (!query) {
+      setSearchResult([]);
+    }
+    try {
+      if (query) {
+        setLoading(true);
+        const { data } = await axios.get(`/api/users?search=${query}`);
+        setLoading(false);
+        setSearchResult(data);
+      }
+    } catch (error) {
+      toast.error("Failed to load search results");
+    }
+  };
 
   return (
     <Transition.Root show={isGroupOpen} as={Fragment} appear={true}>
@@ -63,10 +151,10 @@ export const UpdateGroupChatModal = ({
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <div className="flex h-3/5 flex-col w-1/4 overflow-hidden rounded-lg bg-white text-left ">
+              <div className="flex h-4/5 flex-col w-1/4  rounded-lg bg-white text-left ">
                 <div className="flex">
-                  <div className="flex w-full justify-center items-center bg-white px-4 pb-4 pt-5 ">
-                    <h3 className="text-2xl items-center font-semibold leading-6 text-gray-900 ">
+                  <div className="flex w-full overflow-hidden justify-center items-center bg-white ml-4 px-4 pb-4 pt-5 ">
+                    <h3 className=" text-2xl items-center font-semibold leading-6 text-gray-900 ">
                       {selectedChat.chatName}
                     </h3>
                   </div>
@@ -90,7 +178,7 @@ export const UpdateGroupChatModal = ({
                 </div>
 
                 <div className="w-full flex justify-center mt-4 items-center">
-                  <div className="w-4/6">
+                  <div className="w-4/5 ml-4">
                     <input
                       type="text"
                       placeholder="Chat name"
@@ -98,17 +186,29 @@ export const UpdateGroupChatModal = ({
                       onChange={(e) => setGroupChatName(e.target.value)}
                     />
                   </div>
-                  <div className="ml-4">
+                  <div className="ml-4 w-20 mr-4 ">
                     <button
                       type="button"
-                      className=" mb-3 rounded p-2 px-3 text-center bg-green-800 text-white"
+                      className=" flex justify-center mb-3 h-10 w-20 rounded p-2 px-3 text-center bg-green-800 text-white"
                       onClick={handleRename}
                     >
-                      Update
+                      {renameLoading ? (
+                        <Oval
+                          visible={true}
+                          height="25"
+                          width="25"
+                          color="white"
+                          secondaryColor="grey"
+                          ariaLabel="oval-loading"
+                          wrapperStyle={{ justifyContent: "center" }}
+                        />
+                      ) : (
+                        "Update"
+                      )}
                     </button>
                   </div>
                 </div>
-                <div className="w-full">
+                <div className="w-full flex justify-center px-4 mt-2 items-center">
                   <input
                     type="text"
                     placeholder="Add user to group"
@@ -116,7 +216,29 @@ export const UpdateGroupChatModal = ({
                     onChange={(e) => handleSearch(e.target.value)}
                   />
                 </div>
-                <div className=" px-4 py-1 sm:flex sm:flex-row-reverse sm:px-6">
+                <div className="flex flex-col h-full overflow-y-scroll pt-1 mt-2 ">
+                  {loading ? (
+                    <Oval
+                      visible={true}
+                      height="30"
+                      width="30"
+                      color="white"
+                      secondaryColor="grey"
+                      ariaLabel="oval-loading"
+                      wrapperStyle={{ justifyContent: "center" }}
+                    />
+                  ) : (
+                    searchResult.map((user) => (
+                      <UserListItem
+                        margins="p-1 mt-1"
+                        key={user._id}
+                        user={user}
+                        handleFunction={() => handleAddUser(user)}
+                      />
+                    ))
+                  )}
+                </div>
+                <div className=" px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                   <button
                     type="button"
                     className="mt-1 mb-2 rounded p-1 pl-3 pr-3 text-center bg-red-500 text-white"

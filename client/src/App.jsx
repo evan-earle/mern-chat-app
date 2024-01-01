@@ -11,7 +11,9 @@ function App() {
         position="bottom-center"
         toastOptions={{
           style: {
-            fontSize: "1.5rem",
+            fontSize: "1rem",
+            border: "1px solid grey",
+            boxShadow: "2px 2px 2px 2px",
           },
         }}
       ></Toaster>

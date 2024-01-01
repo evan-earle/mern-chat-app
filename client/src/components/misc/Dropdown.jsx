@@ -14,7 +14,7 @@ function classNames(...classes) {
 export const Dropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const { user, setUser } = ChatState();
+  const { user, setUser, setSelectedChat } = ChatState();
 
   const navigate = useNavigate();
 
@@ -25,6 +25,7 @@ export const Dropdown = () => {
   const handleLogout = async () => {
     try {
       await axios.get("/api/auth/logout");
+      setSelectedChat();
       localStorage.removeItem("userInfo");
       toast.success("Logged out");
       navigate("/");
