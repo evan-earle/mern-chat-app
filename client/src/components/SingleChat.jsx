@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { ChatState } from "../context/ChatProvider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faUser } from "@fortawesome/free-solid-svg-icons";
@@ -10,14 +11,13 @@ import {
   isSameUser,
 } from "../config/ChatLogics";
 import { ProfileModal } from "./misc/ProfileModal";
-import { UpdateGroupChatModal } from "./misc/updateGroupChatModal";
+import { UpdateGroupChatModal } from "./misc/UpdateGroupChatModal";
 import { useState } from "react";
 import { Oval } from "react-loader-spinner";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useEffect, useRef } from "react";
 import io from "socket.io-client";
-import animationData from "../animations/typing.json";
 
 const ENDPOINT = "http://localhost:3001";
 let socket, selectedChatCompare;
@@ -33,15 +33,6 @@ export const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [socketConnected, setSocketConnected] = useState(false);
   const [typing, setTyping] = useState(false);
   const [isTyping, setIsTyping] = useState(typing);
-
-  const defaultOptions = {
-    loop: true,
-    autoplay: true,
-    animationData: animationData,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
-  };
 
   const messagesEndRef = useRef(null);
 
