@@ -1,12 +1,9 @@
 import { ChatState } from "../../context/ChatProvider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faMagnifyingGlass,
-  faBell,
-  faXmark,
-} from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useState, Fragment } from "react";
 import { Dropdown } from "../misc/Dropdown.jsx";
+import { Notification } from "./Notification.jsx";
 import { Transition } from "@headlessui/react";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -20,7 +17,7 @@ export const SideDrawer = () => {
   const [loadingChat, setLoadingChat] = useState();
   const [isOpen, setIsOpen] = useState(false);
 
-  const { user, setSelectedChat, chats, setChats } = ChatState();
+  const { user, setSelectedChat, chats, setChats, notification } = ChatState();
 
   const toggleDrawer = () => {
     setIsOpen(!isOpen);
@@ -79,7 +76,7 @@ export const SideDrawer = () => {
         <h1 className="text-2xl">Skyward</h1>
         <div className="flex items-center w-80 justify-between mr-6 ">
           {user.name}
-          <FontAwesomeIcon icon={faBell} className="cursor-pointer" />
+          <Notification notification={notification} />
           <button className="rounded h-12 flex items-center cursor-default">
             <img
               className="w-10 h-10 rounded-full"

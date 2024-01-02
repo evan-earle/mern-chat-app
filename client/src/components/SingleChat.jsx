@@ -16,14 +16,33 @@ import { Oval } from "react-loader-spinner";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useEffect, useRef } from "react";
+import io from "socket.io-client";
+import Lottie from "react-lottie";
+import animationData from "../animations/typing.json";
+
+const ENDPOINT = "http://localhost:3001";
+let socket, selectedChatCompare;
 
 export const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [newMessage, setNewMessage] = useState();
-  const { user, selectedChat, setSelectedChat } = ChatState();
+  const [newMessage, setNewMessage] = useState("");
+  const { user, selectedChat, setSelectedChat, notification, setNotification } =
+    ChatState();
   const [isOpen, setIsOpen] = useState(false);
   const [isGroupOpen, setIsGroupOpen] = useState(false);
+  const [socketConnected, setSocketConnected] = useState(false);
+  const [typing, setTyping] = useState(false);
+  const [isTyping, setIsTyping] = useState(typing);
+
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
 
   const messagesEndRef = useRef(null);
 
@@ -42,6 +61,7 @@ export const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       const { data } = await axios.get(`/api/message/${selectedChat._id}`);
       setMessages(data);
       setLoading(false);
+      socket.emit("join chat", selectedChat._id);
     } catch (error) {
       toast.error("Failed to load messages");
     }
@@ -52,22 +72,48 @@ export const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   };
 
   useEffect(() => {
+    socket = io(ENDPOINT);
+    socket.emit("setup", user);
+    socket.on("connected", () => setSocketConnected(true));
+    socket.on("typing", () => setIsTyping(true));
+    socket.on("stop typing", () => setIsTyping(false));
+  }, []);
+
+  useEffect(() => {
     fetchMessages();
+    selectedChatCompare = selectedChat;
   }, [selectedChat]);
 
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
+  useEffect(() => {
+    socket.on("message received", (newMessageReceived) => {
+      if (
+        !selectedChatCompare ||
+        selectedChatCompare._id !== newMessageReceived.chat._id
+      ) {
+        if (!notification.includes(newMessageReceived)) {
+          setNotification([newMessageReceived, ...notification]);
+          setFetchAgain(!fetchAgain);
+        }
+      } else {
+        setMessages([...messages, newMessageReceived]);
+      }
+    });
+  });
+
   const sendMessage = async (event) => {
     if (event.key === "Enter" && newMessage) {
+      socket.emit("stop typing", selectedChat._id);
       try {
         setNewMessage("");
         const { data } = await axios.post(`/api/message`, {
           content: newMessage,
           chatId: selectedChat._id,
         });
-
+        socket.emit("new message", data);
         setMessages([...messages, data]);
       } catch (error) {
         toast.error("Failed to send message");
@@ -78,6 +124,24 @@ export const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const typingHandler = (e) => {
     setNewMessage(e.target.value);
     //typing indicator logic
+
+    if (!socketConnected) return;
+
+    if (!typing) {
+      setTyping(true);
+      socket.emit("typing", selectedChat._id);
+    }
+    // let lastTypingTime = new Date().getTime();
+    let timerLength = 3000;
+    setTimeout(() => {
+      // let timeNow = new Date().getTime();
+      // let timeDiff = timeNow - lastTypingTime;
+
+      if (typing) {
+        socket.emit("stop typing", selectedChat._id);
+        setTyping(false);
+      }
+    }, timerLength);
   };
 
   return (
@@ -177,27 +241,41 @@ export const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                             <div className="">
                               {isSameSender(messages, m, i, user._id) &&
                                 isLastMessage(messages, m, i, user._id) && (
-                                  <img
-                                    className="w-10 h-10 rounded-full mr-1 "
-                                    src={m.sender.image}
-                                    alt="sender-image"
-                                  />
+                                  <>
+                                    <img
+                                      className="w-10 h-10 rounded-full mr-1 "
+                                      src={m.sender.image}
+                                      alt="sender-image"
+                                    />
+                                  </>
                                 )}
                             </div>
-                            <div
-                              ref={messagesEndRef}
-                              className={` max-w-2xl rounded-lg p-2 px-4  ${
-                                m.sender._id === user._id
-                                  ? "bg-green-500"
-                                  : `bg-blue-500 ${
-                                      isSameSender(messages, m, i, user._id) &&
-                                      isLastMessage(messages, i, user._id)
-                                        ? null
-                                        : "ml-11"
-                                    }`
-                              }`}
-                            >
-                              {m.content}
+                            <div>
+                              <div>
+                                {isSameSender(messages, m, i, user._id) &&
+                                  m.sender.name}
+                              </div>
+                              <div
+                                ref={messagesEndRef}
+                                className={` max-w-2xl rounded-lg p-2 px-4  ${
+                                  m.sender._id === user._id
+                                    ? "bg-green-500"
+                                    : `bg-blue-500 ${
+                                        isSameSender(
+                                          messages,
+                                          m,
+                                          i,
+                                          user._id
+                                        ) &&
+                                        isLastMessage(messages, i, user._id)
+                                          ? null
+                                          : "ml-11"
+                                      }`
+                                }`}
+                              >
+                                {m.content}
+                                {m.createdAt}
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -206,6 +284,17 @@ export const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 )}
 
                 <div className="">
+                  {isTyping ? (
+                    <div className="mt-10">
+                      <Lottie
+                        options={defaultOptions}
+                        width={70}
+                        style={{ marginLeft: 0, marginTop: 10 }}
+                      />
+                    </div>
+                  ) : (
+                    <></>
+                  )}
                   <input
                     className="border-2 w-full mt-4 rounded p-2 text-black bg-slate-300 focus:outline-none hover:bg-slate-100 duration-150 focus:border-blue-400"
                     onKeyDown={sendMessage}
