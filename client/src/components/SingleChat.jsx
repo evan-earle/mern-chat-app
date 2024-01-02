@@ -17,7 +17,6 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useEffect, useRef } from "react";
 import io from "socket.io-client";
-import Lottie from "react-lottie";
 import animationData from "../animations/typing.json";
 
 const ENDPOINT = "http://localhost:3001";
@@ -284,17 +283,7 @@ export const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 )}
 
                 <div className="">
-                  {isTyping ? (
-                    <div className="mt-10">
-                      <Lottie
-                        options={defaultOptions}
-                        width={70}
-                        style={{ marginLeft: 0, marginTop: 10 }}
-                      />
-                    </div>
-                  ) : (
-                    <></>
-                  )}
+                  {isTyping ? <div className="mt-10">Typing...</div> : <></>}
                   <input
                     className="border-2 w-full mt-4 rounded p-2 text-black bg-slate-300 focus:outline-none hover:bg-slate-100 duration-150 focus:border-blue-400"
                     onKeyDown={sendMessage}
