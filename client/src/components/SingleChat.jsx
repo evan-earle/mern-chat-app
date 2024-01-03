@@ -19,7 +19,7 @@ import toast from "react-hot-toast";
 import { useEffect, useRef } from "react";
 import io from "socket.io-client";
 
-const ENDPOINT = "http://localhost:3001";
+const ENDPOINT = "https://mern-chat-2kmu.onrender.com";
 let socket, selectedChatCompare;
 
 export const SingleChat = ({ fetchAgain, setFetchAgain }) => {
