@@ -84,7 +84,13 @@ export const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         !selectedChatCompare ||
         selectedChatCompare._id !== newMessageReceived.chat._id
       ) {
-        if (!notification.includes(newMessageReceived)) {
+        if (
+          !notification.includes(newMessageReceived) &&
+          !checkForDuplicates(
+            newMessageReceived.sender._id,
+            newMessageReceived.chat._id
+          )
+        ) {
           setNotification([newMessageReceived, ...notification]);
           setFetchAgain(!fetchAgain);
         }
@@ -93,6 +99,16 @@ export const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       }
     });
   });
+
+  const checkForDuplicates = (senderId, chatId) => {
+    let sender = notification.map((s) => s.sender._id);
+    let chat = notification.map((c) => c.chat._id);
+
+    if (sender.includes(senderId) && chat.includes(chatId)) {
+      return true;
+    }
+    return;
+  };
 
   const sendMessage = async (event) => {
     if (event.key === "Enter" && newMessage) {
@@ -132,6 +148,14 @@ export const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         setTyping(false);
       }
     }, timerLength);
+  };
+
+  const convertDate = (date) => {
+    const s = new Date(date).toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+    });
+    return s;
   };
 
   return (
@@ -228,7 +252,7 @@ export const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                           )} `}
                         >
                           <div className="flex">
-                            <div className="">
+                            <div className="flex flex-col justify-end">
                               {isSameSender(messages, m, i, user._id) &&
                                 isLastMessage(messages, m, i, user._id) && (
                                   <>
@@ -241,15 +265,11 @@ export const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                                 )}
                             </div>
                             <div>
-                              <div>
-                                {isSameSender(messages, m, i, user._id) &&
-                                  m.sender.name}
-                              </div>
                               <div
                                 ref={messagesEndRef}
-                                className={` max-w-2xl rounded-lg p-2 px-4  ${
+                                className={`max-w-2xl rounded-lg p-2 px-4 min-w-40  ${
                                   m.sender._id === user._id
-                                    ? "bg-green-500"
+                                    ? "bg-slate-500"
                                     : `bg-blue-500 ${
                                         isSameSender(
                                           messages,
@@ -263,8 +283,18 @@ export const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                                       }`
                                 }`}
                               >
-                                {m.content}
-                                {m.createdAt}
+                                <div className="flex flex-col h-full">
+                                  {m.chat.isGroupChat ? (
+                                    <div className="text-black font-semibold text-xs">
+                                      {isSameSender(messages, m, i, user._id) &&
+                                        m.sender.name}
+                                    </div>
+                                  ) : null}
+                                  <div className="text-white">{m.content}</div>
+                                  <div className="flex justify-end text-xs font-semibold">
+                                    {convertDate(m.createdAt)}
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           </div>

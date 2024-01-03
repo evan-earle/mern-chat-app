@@ -65,11 +65,21 @@ export const MyChats = ({ fetchAgain }) => {
                   alt="profile-photo"
                   className="rounded-full w-12 h-12"
                 />
-                <div className="flex-col ml-4">
+                <div className="flex-col ml-4 text-lg">
                   <div>
                     {!chat.isGroupChat
                       ? getSender(loggedUser, chat.users)
                       : chat.chatName}
+                  </div>
+                  <div className="text-sm">
+                    <b>
+                      {chat.latestMessage
+                        ? chat.latestMessage.sender.name + ": "
+                        : null}
+                    </b>
+                    {chat.latestMessage
+                      ? chat.latestMessage.content
+                      : "no messages"}
                   </div>
                 </div>
               </div>

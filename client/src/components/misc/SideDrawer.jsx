@@ -74,7 +74,7 @@ export const SideDrawer = () => {
           Search User
         </button>
         <h1 className="text-2xl">Skyward</h1>
-        <div className="flex items-center w-80 justify-between mr-6 ">
+        <div className="flex h-full items-center w-80 justify-between mr-6 ">
           {user.name}
           <Notification notification={notification} />
           <button className="rounded h-12 flex items-center cursor-default">
