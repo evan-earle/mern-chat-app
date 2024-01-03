@@ -86,7 +86,7 @@ export const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       ) {
         if (
           !notification.includes(newMessageReceived) &&
-          !checkForDuplicates(
+          checkForDuplicates(
             newMessageReceived.sender._id,
             newMessageReceived.chat._id
           )
@@ -104,10 +104,12 @@ export const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     let sender = notification.map((s) => s.sender._id);
     let chat = notification.map((c) => c.chat._id);
 
-    if (sender.includes(senderId) && chat.includes(chatId)) {
+    if (sender.includes(senderId) && !chat.includes(chatId)) {
       return true;
+    } else if (sender.includes(senderId) && chat.includes(chatId)) {
+      return false;
     }
-    return;
+    return true;
   };
 
   const sendMessage = async (event) => {

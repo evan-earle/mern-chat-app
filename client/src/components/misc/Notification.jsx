@@ -7,18 +7,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
 import { useEffect } from "react";
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
-
 export const Notification = () => {
-  const [isOpen, setIsOpen] = useState(false);
   const [count, setCount] = useState(0);
 
   const { user, setUser, setSelectedChat, notification, setNotification } =
     ChatState();
 
   useEffect(() => {
+    console.log(notification);
     setCount(notification.length);
   }, [notification.length]);
 
