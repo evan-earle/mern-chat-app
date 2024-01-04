@@ -20,7 +20,7 @@ import { useEffect, useRef } from "react";
 import io from "socket.io-client";
 import { Typing } from "../animations/typing";
 
-const ENDPOINT = "http://localhost:3001";
+const ENDPOINT = "https://mern-chat-2kmu.onrender.com";
 //http://localhost:3001
 //https://mern-chat-2kmu.onrender.com
 let socket, selectedChatCompare;
