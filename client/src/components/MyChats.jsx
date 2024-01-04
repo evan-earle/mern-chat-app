@@ -35,7 +35,7 @@ export const MyChats = ({ fetchAgain }) => {
     <>
       <GroupChatModal toggleModal={toggleModal} isOpen={isOpen} />
       <div
-        className={`flex flex-col w-2/5 mt-4 ml-4  bg-white p-2 rounded pl-2 pr-2 items-center border-4
+        className={`flex flex-col w-2/5 mt-4 ml-4 mr-4 bg-white p-2 rounded pl-2 pr-2 items-center border-4
           ${selectedChat ? "max-lg:hidden" : "max-lg:w-full"}`}
       >
         <div className="flex justify-between h-12 w-full items-center mb-4 ">

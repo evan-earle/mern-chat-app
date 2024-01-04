@@ -15,6 +15,7 @@ export const getUserInfo = async (req, res, next) => {
 export const updateUser = async (req, res, next) => {
   try {
     const user = await User.findOne({ username: req.body.username });
+
     if (user) {
       return next(createError({ status: 401, message: "User already exists" }));
     }

@@ -18,8 +18,11 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useEffect, useRef } from "react";
 import io from "socket.io-client";
+import { Typing } from "../animations/typing";
 
-const ENDPOINT = "https://mern-chat-2kmu.onrender.com";
+const ENDPOINT = "http://localhost:3001";
+//http://localhost:3001
+//https://mern-chat-2kmu.onrender.com
 let socket, selectedChatCompare;
 
 export const SingleChat = ({ fetchAgain, setFetchAgain }) => {
@@ -76,7 +79,7 @@ export const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, isTyping]);
 
   useEffect(() => {
     socket.on("message received", (newMessageReceived) => {
@@ -239,7 +242,7 @@ export const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                     />
                   </>
                 ) : (
-                  <div className={`flex flex-col  w-full overflow-y-auto`}>
+                  <div className={`flex flex-col w-full overflow-y-auto`}>
                     {messages &&
                       messages.map((m, i) => (
                         <div
@@ -253,7 +256,7 @@ export const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                             user._id
                           )} `}
                         >
-                          <div className="flex">
+                          <div className="flex ">
                             <div className="flex flex-col justify-end">
                               {isSameSender(messages, m, i, user._id) &&
                                 isLastMessage(messages, m, i, user._id) && (
@@ -305,8 +308,14 @@ export const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                   </div>
                 )}
 
-                <div className="">
-                  {isTyping ? <div className="mt-10">Typing...</div> : <></>}
+                <div className="mt-4 w-full">
+                  {isTyping ? (
+                    <div className="w-full">
+                      <Typing />
+                    </div>
+                  ) : (
+                    <></>
+                  )}
                   <input
                     className="border-2 w-full mt-4 rounded p-2 text-black bg-slate-300 focus:outline-none hover:bg-slate-100 duration-150 focus:border-blue-400"
                     onKeyDown={sendMessage}

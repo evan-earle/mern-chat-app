@@ -14,7 +14,6 @@ export const Notification = () => {
     ChatState();
 
   useEffect(() => {
-    console.log(notification);
     setCount(notification.length);
   }, [notification.length]);
 

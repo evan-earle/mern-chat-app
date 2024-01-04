@@ -34,9 +34,11 @@ export const Login = ({ authType }) => {
         email,
         password,
       });
+
       setUser(data);
 
       localStorage.setItem("userInfo", JSON.stringify(data));
+
       setTimeout(() => {
         setLoading(false);
         setGuestLoading(false);
