@@ -151,7 +151,7 @@ export const UpdateGroupChatModal = ({
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <div className="flex h-4/5 flex-col w-1/4  rounded-lg bg-white text-left ">
+              <div className="flex h-4/5 flex-col w-2/5  rounded-lg bg-white text-left max-md:w-3/5 max-sm:w-full ">
                 <div className="flex">
                   <div className="flex w-full overflow-hidden justify-center items-center bg-white ml-4 px-4 pb-4 pt-5 ">
                     <h3 className=" text-2xl items-center font-semibold leading-6 text-gray-900 ">

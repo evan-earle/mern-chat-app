@@ -65,26 +65,32 @@ export const SideDrawer = () => {
 
   return (
     <>
-      <div className="w-full  border-4 items-center flex justify-between bg-white">
+      <div className="w-full  border-4 items-center flex justify-between bg-white  ">
         <button
-          className="ml-2 p-2 rounded flex w-36 justify-between items-center hover:bg-slate-200 duration-300"
+          className="ml-2 p-2 rounded flex  justify-between items-center hover:bg-slate-200 duration-300 "
           onClick={toggleDrawer}
         >
           <FontAwesomeIcon icon={faMagnifyingGlass} />
-          Search User
+          <h3 className="max-md:hidden ml-3">Search User</h3>
         </button>
-        <h1 className="text-2xl">Skyward</h1>
-        <div className="flex h-full items-center w-80 justify-between mr-6 ">
-          {user.name}
-          <Notification notification={notification} />
+        <div className="max-sm:mr-16">
+          <h1 className="text-2xl">Skyward</h1>
+        </div>
+        <div className="flex h-full items-center w-80 justify-between mr-6 max-sm:justify-end max-sm:w-0 ">
+          <h3 className="max-md:hidden ">{user.name}</h3>
+          <div className="max-sm:mr-4">
+            <Notification notification={notification} />
+          </div>
           <button className="rounded h-12 flex items-center cursor-default">
             <img
-              className="w-10 h-10 rounded-full"
+              className="w-10 h-10 rounded-full max-md:hidden"
               src={user.image}
               alt="profile-photo"
             />
           </button>
-          <Dropdown />
+          <div>
+            <Dropdown />
+          </div>
         </div>
       </div>
 
@@ -100,7 +106,7 @@ export const SideDrawer = () => {
         leaveTo="opacity-0"
       >
         <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity z-50">
-          <div className="top-0 left-0 fixed w-[20vw] bg-white  text-black  h-full overflow-y-scroll pb-4 ">
+          <div className="top-0 left-0 fixed w-3/12 bg-white  text-black  h-full overflow-y-scroll pb-4 max-lg:w-4/12 max-md:w-5/12 max-sm:w-full ">
             <div className="flex w-full justify-between p-4 border-b-2 pl-6 pr-6">
               <h3 className="text-2xl text-">Search Users</h3>
               <button onClick={toggleDrawer}>
@@ -118,7 +124,7 @@ export const SideDrawer = () => {
               />
               <button
                 onClick={handleSearch}
-                className=" items-center text-black rounded bg-gray-300 px-3 py-2 text-sm font-semibold shadow-sm hover:bg-gray-500 sm:ml-3 sm:w-auto"
+                className=" items-center text-black rounded bg-gray-300 px-3 py-2 text-sm font-semibold shadow-sm hover:bg-gray-500 ml-3"
               >
                 Go
               </button>

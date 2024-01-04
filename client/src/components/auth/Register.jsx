@@ -89,10 +89,13 @@ export const Register = ({ authType }) => {
       className="min-h-full h-screen flex items-center  flex-col py-6 px-4 sm:px-6 lg:px-8 bg-no-repeat bg-cover bg-center "
       style={{ backgroundImage: `url(${Night})` }}
     >
-      <h1 className=" w-1/3 flex justify-center mb-3 p-4 rounded  bg-slate-50 text-3xl">
+      <h1 className=" w-1/3 flex justify-center mb-3 p-4 rounded  bg-slate-50 text-3xl max-lg:w-2/3 max-sm:w-full">
         Skyward
       </h1>
-      <form className="w-1/3 bg-slate-50 rounded p-4" onSubmit={onSubmit}>
+      <form
+        className="w-1/3 bg-slate-50 rounded p-4 max-lg:w-2/3 max-sm:w-full"
+        onSubmit={onSubmit}
+      >
         <div className="flex justify-evenly w-full ">
           <h3
             onClick={() => authType("login")}

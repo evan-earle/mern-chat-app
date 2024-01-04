@@ -56,16 +56,19 @@ export const Login = ({ authType }) => {
 
   return (
     <div
-      className="min-h-full h-screen flex items-center  flex-col py-6 px-4 sm:px-6 lg:px-8 bg-no-repeat bg-cover bg-center "
+      className="min-h-full h-screen flex items-center flex-col py-6 px-4 sm:px-6 lg:px-8 bg-no-repeat bg-cover bg-center  "
       style={{ backgroundImage: `url(${Night})` }}
     >
-      <h1 className=" w-1/3 flex justify-center mb-3 p-4 rounded  bg-slate-50 text-3xl">
+      <h1 className=" w-1/3 flex justify-center mb-3 p-4 rounded bg-slate-50 text-3xl max-lg:w-2/3 max-sm:w-full">
         Skyward
       </h1>
-      <form className="w-1/3 bg-slate-50 rounded p-4" onSubmit={onSubmit}>
+      <form
+        className="w-1/3 bg-slate-50 rounded p-4 max-lg:w-2/3 max-sm:w-full"
+        onSubmit={onSubmit}
+      >
         <div className="flex justify-evenly w-full ">
           <h3
-            className={`text-center p-2  w-3/5 rounded-full cursor-pointer  ${
+            className={`text-center p-2 w-3/5 rounded-full cursor-pointer  ${
               authType !== "login" ? " bg-blue-200" : null
             }`}
           >

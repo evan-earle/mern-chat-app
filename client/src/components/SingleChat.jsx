@@ -184,8 +184,8 @@ export const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       <div className="flex h-full w-full items-center justify-between ">
         {selectedChat ? (
           <>
-            <div className="flex flex-col h-full w-full justify-between">
-              <div className="flex justify-between h-12 mb-4">
+            <div className="flex flex-col h-full w-full justify-between ">
+              <div className="flex h-14 justify-between mb-2">
                 <FontAwesomeIcon
                   icon={faArrowLeft}
                   className={`cursor-pointer bg-gray-200 hover:bg-slate-300 duration-300  justify-center  rounded-lg p-3 m-2  ${
@@ -196,7 +196,7 @@ export const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
                 {!selectedChat.isGroupChat ? (
                   <>
-                    <h3 className="text-3xl p-3 ">
+                    <h3 className="text-3xl p-3 h-14 flex justify-center text-center  max-sm:text-xl max-sm:flex max-sm:flex-col ">
                       {getSender(user, selectedChat.users)}
                     </h3>
 
@@ -209,7 +209,7 @@ export const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                   </>
                 ) : (
                   <>
-                    <h3 className="text-3xl p-3">
+                    <h3 className="text-3xl p-3 h-14 flex justify-center text-center  max-sm:text-xl max-sm:flex max-sm:flex-col">
                       {selectedChat.chatName.toUpperCase()}
                     </h3>
                     <FontAwesomeIcon
@@ -262,7 +262,7 @@ export const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                                 isLastMessage(messages, m, i, user._id) && (
                                   <>
                                     <img
-                                      className="w-10 h-10 rounded-full mr-1 "
+                                      className="w-10 h-10 rounded-full mr-1 max-sm:w-7 max-sm:h-7 "
                                       src={m.sender.image}
                                       alt="sender-image"
                                     />
@@ -272,7 +272,7 @@ export const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                             <div>
                               <div
                                 ref={messagesEndRef}
-                                className={`max-w-2xl rounded-lg p-2 px-4 min-w-40  ${
+                                className={`max-w-2xl rounded-lg p-2 px-4 min-w-40 max-sm:max-w-1 max-sm:px-2 max-sm:py-2  ${
                                   m.sender._id === user._id
                                     ? "bg-slate-500"
                                     : `bg-blue-500 ${
@@ -288,15 +288,17 @@ export const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                                       }`
                                 }`}
                               >
-                                <div className="flex flex-col h-full">
+                                <div className="flex flex-col h-full ">
                                   {m.chat.isGroupChat ? (
                                     <div className="text-black font-semibold text-xs">
                                       {isSameSender(messages, m, i, user._id) &&
                                         m.sender.name}
                                     </div>
                                   ) : null}
-                                  <div className="text-white">{m.content}</div>
-                                  <div className="flex justify-end text-xs font-semibold">
+                                  <div className="text-white text-base max-sm:text-sm">
+                                    {m.content}
+                                  </div>
+                                  <div className="flex justify-end text-xs font-semibold ">
                                     {convertDate(m.createdAt)}
                                   </div>
                                 </div>
